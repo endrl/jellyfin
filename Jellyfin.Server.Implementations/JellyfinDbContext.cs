@@ -78,6 +78,11 @@ public class JellyfinDbContext : DbContext
     /// </summary>
     public DbSet<User> Users => Set<User>();
 
+    /// <summary>
+    /// Gets the <see cref="DbSet{TEntity}"/> containing the media segments.
+    /// </summary>
+    public DbSet<MediaSegment> Segments => Set<MediaSegment>();
+
     /*public DbSet<Artwork> Artwork => Set<Artwork>();
 
     public DbSet<Book> Books => Set<Book>();
