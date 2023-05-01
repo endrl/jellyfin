@@ -60,6 +60,11 @@ namespace Jellyfin.Data.Entities
             PlayDefaultAudioTrack = true;
             SubtitleMode = SubtitlePlaybackMode.Default;
             SyncPlayAccess = SyncPlayUserAccessType.CreateAndJoinGroups;
+            SegmentIntroAction = MediaSegmentAction.Auto;
+            SegmentOutroAction = MediaSegmentAction.Auto;
+            SegmentRecapAction = MediaSegmentAction.Auto;
+            SegmentPreviewAction = MediaSegmentAction.Auto;
+            SegmentCommercialAction = MediaSegmentAction.Auto;
         }
 
         /// <summary>
@@ -238,6 +243,46 @@ namespace Jellyfin.Data.Entities
         /// Required.
         /// </remarks>
         public bool EnableNextEpisodeAutoPlay { get; set; }
+
+        /// <summary>
+        /// Gets or sets the segment action for intro.
+        /// </summary>
+        /// <remarks>
+        /// Required.
+        /// </remarks>
+        public MediaSegmentAction SegmentIntroAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the segment action for outra.
+        /// </summary>
+        /// <remarks>
+        /// Required.
+        /// </remarks>
+        public MediaSegmentAction SegmentOutroAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the segment action for recap.
+        /// </summary>
+        /// <remarks>
+        /// Required.
+        /// </remarks>
+        public MediaSegmentAction SegmentRecapAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the segment action for preview.
+        /// </summary>
+        /// <remarks>
+        /// Required.
+        /// </remarks>
+        public MediaSegmentAction SegmentPreviewAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the segment action for commercial.
+        /// </summary>
+        /// <remarks>
+        /// Required.
+        /// </remarks>
+        public MediaSegmentAction SegmentCommercialAction { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the user should auto-login.
