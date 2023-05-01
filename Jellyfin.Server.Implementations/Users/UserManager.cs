@@ -317,6 +317,11 @@ namespace Jellyfin.Server.Implementations.Users
                     EnableNextEpisodeAutoPlay = user.EnableNextEpisodeAutoPlay,
                     RememberSubtitleSelections = user.RememberSubtitleSelections,
                     SubtitleLanguagePreference = user.SubtitleLanguagePreference ?? string.Empty,
+                    SegmentIntroAction = user.SegmentIntroAction,
+                    SegmentOutroAction = user.SegmentOutroAction,
+                    SegmentRecapAction = user.SegmentRecapAction,
+                    SegmentPreviewAction = user.SegmentPreviewAction,
+                    SegmentCommercialAction = user.SegmentCommercialAction,
                     OrderedViews = user.GetPreferenceValues<Guid>(PreferenceKind.OrderedViews),
                     GroupedFolders = user.GetPreferenceValues<Guid>(PreferenceKind.GroupedFolders),
                     MyMediaExcludes = user.GetPreferenceValues<Guid>(PreferenceKind.MyMediaExcludes),
@@ -608,6 +613,11 @@ namespace Jellyfin.Server.Implementations.Users
                 user.EnableNextEpisodeAutoPlay = config.EnableNextEpisodeAutoPlay;
                 user.RememberSubtitleSelections = config.RememberSubtitleSelections;
                 user.SubtitleLanguagePreference = config.SubtitleLanguagePreference;
+                user.SegmentIntroAction = config.SegmentIntroAction;
+                user.SegmentOutroAction = config.SegmentOutroAction;
+                user.SegmentRecapAction = config.SegmentRecapAction;
+                user.SegmentPreviewAction = config.SegmentPreviewAction;
+                user.SegmentCommercialAction = config.SegmentCommercialAction;
 
                 user.SetPreference(PreferenceKind.OrderedViews, config.OrderedViews);
                 user.SetPreference(PreferenceKind.GroupedFolders, config.GroupedFolders);

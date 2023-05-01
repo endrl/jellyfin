@@ -1,6 +1,7 @@
 #pragma warning disable CS1591
 
 using System;
+using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
 
 namespace MediaBrowser.Model.Configuration
@@ -26,7 +27,13 @@ namespace MediaBrowser.Model.Configuration
             OrderedViews = Array.Empty<Guid>();
             MyMediaExcludes = Array.Empty<Guid>();
             GroupedFolders = Array.Empty<Guid>();
-        }
+
+            SegmentIntroAction = MediaSegmentAction.Auto;
+            SegmentOutroAction = MediaSegmentAction.Auto;
+            SegmentRecapAction = MediaSegmentAction.Auto;
+            SegmentPreviewAction = MediaSegmentAction.Auto;
+            SegmentCommercialAction = MediaSegmentAction.Auto;
+            }
 
         /// <summary>
         /// Gets or sets the audio language preference.
@@ -69,5 +76,15 @@ namespace MediaBrowser.Model.Configuration
         public bool RememberSubtitleSelections { get; set; }
 
         public bool EnableNextEpisodeAutoPlay { get; set; }
+
+        public MediaSegmentAction SegmentIntroAction { get; set; }
+
+        public MediaSegmentAction SegmentOutroAction { get; set; }
+
+        public MediaSegmentAction SegmentRecapAction { get; set; }
+
+        public MediaSegmentAction SegmentPreviewAction { get; set; }
+
+        public MediaSegmentAction SegmentCommercialAction { get; set; }
     }
 }
