@@ -37,8 +37,8 @@ public class MediaSegmentController : BaseJellyfinApiController
     /// </summary>
     /// <param name="itemId">Optional: Just segments with itemId.</param>
     /// <param name="creatorId">Optional: Just segments with creatorId.</param>
-    /// <param name="type">Optional: All segments of type. If set requires typeIndex.</param>
-    /// <param name="typeIndex">Optional: All segments with typeIndex. If set requires type.</param>
+    /// <param name="type">Optional: All segments of type.</param>
+    /// <param name="typeIndex">Optional: All segments with typeIndex.</param>
     /// <response code="200">Segments returned.</response>
     /// <returns>An <see cref="OkResult"/>containing the queryresult of segments.</returns>
     [HttpGet]
@@ -46,10 +46,10 @@ public class MediaSegmentController : BaseJellyfinApiController
     public ActionResult<QueryResult<MediaSegment>> GetSegments(
         [FromQuery] Guid itemId,
         [FromQuery] Guid creatorId,
-        [FromQuery] MediaSegmentType type,
+        [FromQuery] MediaSegmentType? type,
         [FromQuery, DefaultValue(-1)] int typeIndex)
     {
-        var list = _mediaSegmentManager.GetAllMediaSegments(itemId, creatorId, type, typeIndex);
+        var list = _mediaSegmentManager.GetAllMediaSegments(itemId, creatorId, typeIndex, type);
 
         return new QueryResult<MediaSegment>(list);
     }
@@ -75,10 +75,10 @@ public class MediaSegmentController : BaseJellyfinApiController
     }
 
     /// <summary>
-    /// Create or update a media segment. You can update start/end/action.
+    /// Create or update a media segment. You can update start/end/action/creatorId.
     /// </summary>
-    /// <param name="start">Start position of segment.</param>
-    /// <param name="end">End position of segment.</param>
+    /// <param name="start">Start position of segment in seconds.</param>
+    /// <param name="end">End position of segment in seconds.</param>
     /// <param name="itemId">Segment is associated with item id.</param>
     /// <param name="creatorId">Segment is associated with creator id.</param>
     /// <param name="type">Segment type.</param>
@@ -117,7 +117,7 @@ public class MediaSegmentController : BaseJellyfinApiController
     }
 
     /// <summary>
-    /// Create or update multiple media segments. See /Segment for required properties.
+    /// Create or update multiple media segments. See /MediaSegment/Segment for required properties.
     /// </summary>
     /// <param name="segments">All segments that should be added.</param>
     /// <response code="200">Segments returned.</response>
@@ -139,8 +139,8 @@ public class MediaSegmentController : BaseJellyfinApiController
     /// </summary>
     /// <param name="itemId">Optional: All segments with itemId.</param>
     /// <param name="creatorId">Optional: All segments with creatorId.</param>
-    /// <param name="type">Optional: All segments of type. If set requires typeIndex.</param>
-    /// <param name="typeIndex">Optional: All segments with typeIndex. If set requires type.</param>
+    /// <param name="type">Optional: All segments of type.</param>
+    /// <param name="typeIndex">Optional: All segments with typeIndex.</param>
     /// <response code="200">Segments returned.</response>
     /// <response code="400">Missing query parameter.</response>
     /// <returns>An <see cref="OkResult"/>containing the queryresult of segments.</returns>
@@ -150,10 +150,10 @@ public class MediaSegmentController : BaseJellyfinApiController
     public async Task<ActionResult<QueryResult<MediaSegment>>> DeleteSegments(
         [FromQuery] Guid itemId,
         [FromQuery] Guid creatorId,
-        [FromQuery] MediaSegmentType type,
+        [FromQuery] MediaSegmentType? type,
         [FromQuery, DefaultValue(-1)] int typeIndex)
     {
-        var list = await _mediaSegmentManager.DeleteSegmentsAsync(itemId, creatorId, type, typeIndex).ConfigureAwait(false);
+        var list = await _mediaSegmentManager.DeleteSegmentsAsync(itemId, creatorId, typeIndex, type).ConfigureAwait(false);
 
         return new QueryResult<MediaSegment>(list);
     }

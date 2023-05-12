@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
-using Jellyfin.Data.Events;
-using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.MediaSegments;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +83,7 @@ namespace Jellyfin.Server.Implementations.MediaSegments
         }
 
         /// <inheritdoc/>
-        public List<MediaSegment> GetAllMediaSegments(Guid itemId = default, Guid creatorId = default, MediaSegmentType type = MediaSegmentType.Intro, int typeIndex = -1)
+        public List<MediaSegment> GetAllMediaSegments(Guid itemId = default, Guid creatorId = default, int typeIndex = -1, MediaSegmentType? type = null)
         {
             var allSegments = new List<MediaSegment>();
 
@@ -104,9 +102,14 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                     queryable = queryable.Where(s => s.CreatorId.Equals(creatorId));
                 }
 
-                if (typeIndex >= 0)
+                if (!type.Equals(null))
                 {
-                    queryable = queryable.Where(s => s.Type.Equals(type) && s.TypeIndex.Equals(typeIndex));
+                    queryable = queryable.Where(s => s.Type.Equals(type));
+                }
+
+                if (typeIndex > -1)
+                {
+                    queryable = queryable.Where(s => s.TypeIndex.Equals(typeIndex));
                 }
 
                 allSegments = queryable.AsNoTracking().ToList();
@@ -123,7 +126,6 @@ namespace Jellyfin.Server.Implementations.MediaSegments
             var dbContext = _dbProvider.CreateDbContext();
             using (dbContext)
             {
-                // var usr = dbContext.Users.Single(u => u.Id == userId);
                 var usr = _userManager.GetUserById(userId);
                 if (usr == null)
                 {
@@ -203,6 +205,7 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                 found.Start = segment.Start;
                 found.End = segment.End;
                 found.Action = segment.Action;
+                found.CreatorId = segment.CreatorId;
             }
             else
             {
@@ -229,30 +232,30 @@ namespace Jellyfin.Server.Implementations.MediaSegments
         }
 
         /// <summary>
-        /// Validate a segment: itemId, creatorId, start >= end.
+        /// Validate a segment: itemId, creatorId, start >= end and type.
         /// </summary>
         /// <param name="segment">The segment to validate.</param>
         private void ValidateSegment(MediaSegment segment)
         {
-            if (segment.Start >= segment.End)
-            {
-                throw new ArgumentException($"start >= end: {segment.Start}>={segment.End} for segment itemId:{segment.ItemId} with type {segment.Type}.{segment.TypeIndex}");
-            }
-
             if (segment.ItemId.Equals(default) || segment.CreatorId.Equals(default))
             {
-                throw new ArgumentException($"itemId or creatorId are default: itemId={segment.ItemId}, creatorId={segment.CreatorId} for segment with type {segment.Type}.{segment.TypeIndex}");
+                throw new ArgumentException($"itemId or creatorId are default: itemId={segment.ItemId}, creatorId={segment.CreatorId} for segment with type '{segment.Type}.{segment.TypeIndex}'");
+            }
+
+            if (segment.Start >= segment.End)
+            {
+                throw new ArgumentException($"start >= end: {segment.Start}>={segment.End} for segment itemId '{segment.ItemId}' with type '{segment.Type}.{segment.TypeIndex}'");
             }
         }
 
         /// <inheritdoc/>
-        public async Task<List<MediaSegment>> DeleteSegmentsAsync(Guid itemId = default, Guid creatorId = default, MediaSegmentType type = MediaSegmentType.Intro, int typeIndex = -1)
+        public async Task<List<MediaSegment>> DeleteSegmentsAsync(Guid itemId = default, Guid creatorId = default, int typeIndex = -1, MediaSegmentType? type = null)
         {
             var allSegments = new List<MediaSegment>();
 
             if (creatorId.Equals(default) && itemId.Equals(default))
             {
-                throw new ArgumentException($"itemId or creatorId is default: itemId={itemId}, creatorId={creatorId}");
+                throw new ArgumentException($"itemId and creatorId are not set. Please provide at least one.");
             }
 
             var dbContext = await _dbProvider.CreateDbContextAsync().ConfigureAwait(false);
@@ -270,9 +273,14 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                     queryable = queryable.Where(s => s.CreatorId.Equals(creatorId));
                 }
 
-                if (typeIndex >= 0)
+                if (!type.Equals(null))
                 {
-                    queryable = queryable.Where(s => s.Type.Equals(type) && s.TypeIndex.Equals(typeIndex));
+                    queryable = queryable.Where(s => s.Type.Equals(type));
+                }
+
+                if (typeIndex > -1)
+                {
+                    queryable = queryable.Where(s => s.TypeIndex.Equals(typeIndex));
                 }
 
                 allSegments = queryable.AsNoTracking().ToList();
