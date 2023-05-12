@@ -31,10 +31,10 @@ namespace MediaBrowser.Model.MediaSegments
         /// </summary>
         /// <param name="itemId">Optional: Just segments with itemId.</param>
         /// <param name="creatorId">Optional: Just segments with creatorId.</param>
-        /// <param name="type">Optional: The segment type. If set requires typeIndex.</param>
-        /// <param name="typeIndex">Optional: The typeIndex. If set requires type.</param>
+        /// <param name="typeIndex">Optional: The typeIndex.</param>
+        /// <param name="type">Optional: The segment type.</param>
         /// <returns>List of MediaSegment.</returns>
-        List<MediaSegment> GetAllMediaSegments(Guid itemId = default, Guid creatorId = default, MediaSegmentType type = MediaSegmentType.Intro, int typeIndex = -1);
+        List<MediaSegment> GetAllMediaSegments(Guid itemId = default, Guid creatorId = default, int typeIndex = -1, MediaSegmentType? type = null);
 
         /// <summary>
         /// Get all media segments for itemId with wanted segment action for user. Should be used by player.
@@ -49,9 +49,9 @@ namespace MediaBrowser.Model.MediaSegments
         /// </summary>
         /// <param name="itemId">Optional: The itemId.</param>
         /// <param name="creatorId">Optional: The creatorId.</param>
-        /// <param name="type">Optional: The segment type. If set requires typeIndex.</param>
-        /// <param name="typeIndex">Optional: The typeIndex. If set requires type.</param>
+        /// <param name="typeIndex">Optional: The typeIndex.</param>
+        /// <param name="type">Optional: The segment type.</param>
         /// <returns>Deleted segments.</returns>
-        Task<List<MediaSegment>> DeleteSegmentsAsync(Guid itemId = default, Guid creatorId = default, MediaSegmentType type = MediaSegmentType.Intro, int typeIndex = -1);
+        Task<List<MediaSegment>> DeleteSegmentsAsync(Guid itemId = default, Guid creatorId = default, int typeIndex = -1, MediaSegmentType? type = null);
     }
 }
