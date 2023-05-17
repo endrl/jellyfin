@@ -67,8 +67,11 @@ public class MediaSegmentController : BaseJellyfinApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<QueryResult<MediaSegment>> GetSegmentsWithAction(
         [FromQuery] Guid userId,
-        [FromQuery] Guid itemId)
+        [FromQuery, Required] Guid itemId)
     {
+        // Where is the "User" context for the request? See ChannelsController
+        // userId = User.GetUserId();
+
         var list = _mediaSegmentManager.GetAllMediaSegmentsWithAction(userId, itemId);
 
         return new QueryResult<MediaSegment>(list);
