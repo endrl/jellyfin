@@ -134,10 +134,10 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                 }
 
                 // Do not use the query chain of GetAllMediaSegments() to save calls
-                var allSegs = dbContext.Segments.Where(s => s.ItemId.Equals(itemId)).AsNoTracking().ToList();
+                allSegments = dbContext.Segments.Where(s => s.ItemId.Equals(itemId)).AsNoTracking().ToList();
 
                 // apply user action, recommended action or default for segment type
-                foreach (var seg in allSegs)
+                foreach (var seg in allSegments)
                 {
                     var segType = seg.Type;
                     var segRecAct = seg.Action;
