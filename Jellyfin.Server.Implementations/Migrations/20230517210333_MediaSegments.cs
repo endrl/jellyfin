@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Jellyfin.Server.Implementations.Migrations
 {
     /// <inheritdoc />
-    public partial class AddMediaSegments : Migration
+    public partial class MediaSegments : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -112,6 +112,20 @@ namespace Jellyfin.Server.Implementations.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
+                name: "MediaSegmentCreator",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Creator = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MediaSegmentCreator", x => x.Id);
+                    table.UniqueConstraint("AK_MediaSegmentCreator_Creator", x => x.Creator);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Segments",
                 columns: table => new
                 {
@@ -126,7 +140,18 @@ namespace Jellyfin.Server.Implementations.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Segments", x => new { x.ItemId, x.Type, x.TypeIndex });
+                    table.ForeignKey(
+                        name: "FK_Segments_MediaSegmentCreator_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "MediaSegmentCreator",
+                        principalColumn: "Creator",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Segments_CreatorId",
+                table: "Segments",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Segments_ItemId",
@@ -139,6 +164,9 @@ namespace Jellyfin.Server.Implementations.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Segments");
+
+            migrationBuilder.DropTable(
+                name: "MediaSegmentCreator");
 
             migrationBuilder.DropColumn(
                 name: "SegmentCommercialAction",

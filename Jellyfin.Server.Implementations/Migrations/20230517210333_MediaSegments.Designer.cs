@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jellyfin.Server.Implementations.Migrations
 {
     [DbContext(typeof(JellyfinDbContext))]
-    [Migration("20230427081316_AddMediaSegments")]
-    partial class AddMediaSegments
+    [Migration("20230517210333_MediaSegments")]
+    partial class MediaSegments
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -298,9 +298,25 @@ namespace Jellyfin.Server.Implementations.Migrations
 
                     b.HasKey("ItemId", "Type", "TypeIndex");
 
+                    b.HasIndex("CreatorId");
+
                     b.HasIndex("ItemId");
 
                     b.ToTable("Segments");
+                });
+
+            modelBuilder.Entity("Jellyfin.Data.Entities.MediaSegmentCreator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("Creator")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MediaSegmentCreator");
                 });
 
             modelBuilder.Entity("Jellyfin.Data.Entities.Permission", b =>
@@ -647,6 +663,18 @@ namespace Jellyfin.Server.Implementations.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Jellyfin.Data.Entities.MediaSegment", b =>
+                {
+                    b.HasOne("Jellyfin.Data.Entities.MediaSegmentCreator", "Creator")
+                        .WithMany("Segments")
+                        .HasForeignKey("CreatorId")
+                        .HasPrincipalKey("Creator")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
             modelBuilder.Entity("Jellyfin.Data.Entities.Permission", b =>
                 {
                     b.HasOne("Jellyfin.Data.Entities.User", null)
@@ -677,6 +705,11 @@ namespace Jellyfin.Server.Implementations.Migrations
             modelBuilder.Entity("Jellyfin.Data.Entities.DisplayPreferences", b =>
                 {
                     b.Navigation("HomeSections");
+                });
+
+            modelBuilder.Entity("Jellyfin.Data.Entities.MediaSegmentCreator", b =>
+                {
+                    b.Navigation("Segments");
                 });
 
             modelBuilder.Entity("Jellyfin.Data.Entities.User", b =>

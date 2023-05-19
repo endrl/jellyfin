@@ -52,6 +52,7 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                 var found = dbContext.Segments.Where(s => s.ItemId.Equals(segment.ItemId) && s.Type.Equals(segment.Type) && s.TypeIndex.Equals(segment.TypeIndex)).FirstOrDefault();
 
                 AddOrUpdateSegment(dbContext, segment, found);
+                Console.WriteLine(dbContext.ChangeTracker.DebugView.LongView);
 
                 await dbContext.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -205,10 +206,31 @@ namespace Jellyfin.Server.Implementations.MediaSegments
                 found.Start = segment.Start;
                 found.End = segment.End;
                 found.Action = segment.Action;
-                found.CreatorId = segment.CreatorId;
+
+                if (!found.CreatorId.Equals(segment.CreatorId))
+                {
+                    /*
+                    var creator = dbContext.Entry(found)
+                        .Reference(s => s.Creator)
+                        .Query()
+                        .Single();
+*/ // TODO Do not create a new Creator when the creator exists in db but the segment should use another creator
+                    var creator = new MediaSegmentCreator()
+                    {
+                        Creator = segment.CreatorId
+                    };
+
+                    found.Creator = creator;
+                }
             }
             else
             {
+                var creator = new MediaSegmentCreator()
+                {
+                    Creator = segment.CreatorId
+                };
+
+                segment.Creator = creator;
                 dbContext.Segments.Add(segment);
             }
         }

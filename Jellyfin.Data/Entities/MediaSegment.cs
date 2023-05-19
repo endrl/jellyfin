@@ -2,6 +2,7 @@
 #pragma warning disable CS1591
 
 using System;
+using System.Text.Json.Serialization;
 using Jellyfin.Data.Enums;
 
 namespace Jellyfin.Data.Entities
@@ -45,7 +46,14 @@ namespace Jellyfin.Data.Entities
         /// Gets or sets the associated CreatorId.
         /// </summary>
         /// <value>The id.</value>
-        public Guid CreatorId { get; set; }
+        public virtual Guid CreatorId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the associated Creator.
+        /// </summary>
+        /// <value>The id.</value>
+        [JsonIgnore]
+        public virtual MediaSegmentCreator Creator { get; set; }
 
         /// <summary>
         /// Gets or sets the creator recommended action. Can be overwritten with user defined action.

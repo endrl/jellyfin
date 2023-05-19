@@ -102,6 +102,11 @@ public class MediaSegmentController : BaseJellyfinApiController
         [FromQuery, DefaultValue(0)] int typeIndex,
         [FromQuery, DefaultValue(MediaSegmentAction.Auto)] MediaSegmentAction action)
     {
+        var creator = new MediaSegmentCreator()
+        {
+            Creator = creatorId
+        };
+
         var newMediaSegment = new MediaSegment()
         {
             Start = start,
@@ -110,7 +115,8 @@ public class MediaSegmentController : BaseJellyfinApiController
             CreatorId = creatorId,
             Type = type,
             TypeIndex = typeIndex,
-            Action = action
+            Action = action,
+            Creator = creator
         };
 
         var segment = await _mediaSegmentManager.CreateMediaSegmentAsync(newMediaSegment).ConfigureAwait(false);
