@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jellyfin.Server.Implementations.Migrations
 {
     [DbContext(typeof(JellyfinDbContext))]
-    [Migration("20230427081316_AddMediaSegments")]
-    partial class AddMediaSegments
+    [Migration("20230918223926_MediaSegments")]
+    partial class MediaSegments
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
 
             modelBuilder.Entity("Jellyfin.Data.Entities.AccessSchedule", b =>
                 {
@@ -495,10 +495,6 @@ namespace Jellyfin.Server.Implementations.Migrations
 
                     b.Property<bool>("DisplayMissingEpisodes")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("EasyPassword")
-                        .HasMaxLength(65535)
-                        .HasColumnType("TEXT");
 
                     b.Property<bool>("EnableAutoLogin")
                         .HasColumnType("INTEGER");
