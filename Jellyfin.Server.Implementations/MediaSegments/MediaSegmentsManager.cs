@@ -18,6 +18,7 @@ namespace Jellyfin.Server.Implementations.MediaSegments
     /// </summary>
     public class MediaSegmentsManager : IMediaSegmentsManager
     {
+        private readonly ILibraryManager _libraryManager;
         private readonly IDbContextFactory<JellyfinDbContext> _dbProvider;
         private readonly IUserManager _userManager;
         private readonly ILogger<MediaSegmentsManager> _logger;
@@ -25,14 +26,19 @@ namespace Jellyfin.Server.Implementations.MediaSegments
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaSegmentsManager"/> class.
         /// </summary>
+        /// <param name="libraryManager">The library manager.</param>
         /// <param name="dbProvider">The database provider.</param>
         /// <param name="userManager">The user manager.</param>
         /// <param name="logger">The logger.</param>
         public MediaSegmentsManager(
+            ILibraryManager libraryManager,
             IDbContextFactory<JellyfinDbContext> dbProvider,
             IUserManager userManager,
             ILogger<MediaSegmentsManager> logger)
         {
+            _libraryManager = libraryManager;
+            _libraryManager.ItemRemoved += LibraryManagerItemRemoved;
+
             _dbProvider = dbProvider;
             _userManager = userManager;
             _logger = logger;
@@ -246,6 +252,18 @@ namespace Jellyfin.Server.Implementations.MediaSegments
             {
                 throw new ArgumentException($"start >= end: {segment.Start}>={segment.End} for segment itemId '{segment.ItemId}' with type '{segment.Type}.{segment.TypeIndex}'");
             }
+        }
+
+        /// <summary>
+        /// Delete all segments when itemid is deleted from library.
+        /// TODO: Do not block
+        /// </summary>
+        /// <param name="sender">The sending entity.</param>
+        /// <param name="itemChangeEventArgs">The <see cref="ItemChangeEventArgs"/>.</param>
+        private void LibraryManagerItemRemoved(object? sender, ItemChangeEventArgs itemChangeEventArgs)
+        {
+            var task = Task.Run(async () => { await DeleteSegmentsAsync(itemChangeEventArgs.Item.Id).ConfigureAwait(false); });
+            task.Wait();
         }
 
         /// <inheritdoc/>
