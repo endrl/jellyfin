@@ -256,7 +256,7 @@ namespace Jellyfin.Server.Implementations.MediaSegments
 
         /// <summary>
         /// Delete all segments when itemid is deleted from library.
-        /// TODO: Do not block
+        /// TODO: Do not block.
         /// </summary>
         /// <param name="sender">The sending entity.</param>
         /// <param name="itemChangeEventArgs">The <see cref="ItemChangeEventArgs"/>.</param>
