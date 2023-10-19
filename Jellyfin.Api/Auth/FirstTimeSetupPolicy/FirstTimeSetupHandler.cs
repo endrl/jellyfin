@@ -38,15 +38,7 @@ namespace Jellyfin.Api.Auth.FirstTimeSetupPolicy
                 return Task.CompletedTask;
             }
 
-            var contextUser = context.User;
-            if (requirement.RequireAdmin && !contextUser.IsInRole(UserRoles.Administrator))
-            {
-                context.Fail();
-                return Task.CompletedTask;
-            }
-
-            var userId = contextUser.GetUserId();
-            if (userId.Equals(default))
+            if (requirement.RequireAdmin && !context.User.IsInRole(UserRoles.Administrator))
             {
                 context.Fail();
                 return Task.CompletedTask;
@@ -58,7 +50,7 @@ namespace Jellyfin.Api.Auth.FirstTimeSetupPolicy
                 return Task.CompletedTask;
             }
 
-            var user = _userManager.GetUserById(userId);
+            var user = _userManager.GetUserById(context.User.GetUserId());
             if (user is null)
             {
                 throw new ResourceNotFoundException();
